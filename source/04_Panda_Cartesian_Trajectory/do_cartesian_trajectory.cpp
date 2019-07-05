@@ -27,26 +27,15 @@ int main() {
 
     auto traj = LinearTrajectory(initial_pose, targetPose, 0.05, 0.5, 1.e-3);
     std::cout << "t_E = " << traj.getTEnd() << " s" << std::endl;
-    auto motionIterator = std::make_unique<TrajectoryIteratorCartesianPose>(traj);
+    auto motionIterator = std::make_unique<TrajectoryIteratorCartesianVelocity>(traj);
 
     std::cout << "WARNING: The robot will move now. "
               << "Keep around the STOP button." << std::endl
               << "Press ENTER to continue." << std::endl;
+    std::cin.ignore();
 
-    panda.control(
-        [&motionIterator](const franka::RobotState &,
-                          franka::Duration) -> franka::CartesianVelocities {
-          auto cartesianVelDes =
-              franka::CartesianVelocities(motionIterator->getCartesianVelocity());
-          motionIterator->step();
-
-          if (motionIterator->getCurrentTime() < motionIterator->getEndTime()) {
-            return cartesianVelDes;
-          } else {
-            return franka::MotionFinished(cartesianVelDes);
-          }
-        },
-        /*controller_mode = */ franka::ControllerMode::kCartesianImpedance);
+    panda.control(*motionIterator,
+                  /*controller_mode = */ franka::ControllerMode::kCartesianImpedance);
 
   } catch (const franka::Exception &e) {
     std::cout << e.what() << std::endl;
