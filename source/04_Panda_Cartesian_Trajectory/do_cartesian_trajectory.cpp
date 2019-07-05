@@ -18,13 +18,15 @@ int main() {
     franka::Robot panda(robot_ip);
     setDefaultBehaviour(panda);
 
-    // read current robot state
+    // 2. read current robot state
     franka::RobotState initial_state = panda.readOnce();
     Eigen::Vector6d initial_pose = homogeneousTfArray2PoseVec(initial_state.O_T_EE_c);
 
+    // 3. Calculate target pose
     Eigen::Vector6d targetPose = initial_pose;
     targetPose.head<3>() += Eigen::Vector3d::Constant(0.1);
 
+    // 4./5. LinearTrajectory and TrajectoryIteratorCartesianVelocity object creation
     auto traj = LinearTrajectory(initial_pose, targetPose, 0.05, 0.5, 1.e-3);
     std::cout << "t_E = " << traj.getTEnd() << " s" << std::endl;
     auto motionIterator = std::make_unique<TrajectoryIteratorCartesianVelocity>(traj);
@@ -34,6 +36,7 @@ int main() {
               << "Press ENTER to continue." << std::endl;
     std::cin.ignore();
 
+    // 6. Franka Robot Controller:
     panda.control(*motionIterator,
                   /*controller_mode = */ franka::ControllerMode::kCartesianImpedance);
 
