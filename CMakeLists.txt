@@ -4,8 +4,16 @@ project(test_proj_franka_ctrl
         VERSION 0.1.0 
         LANGUAGES CXX)
 
+message("------------------------------------")
+message(" ${PROJECT_NAME} ${${PROJECT_NAME}_VERSION}")
+message("------------------------------------")
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(NOT CMAKE_BUILD_TYPE) 
+    set(CMAKE_BUILD_TYPE Release)
+endif(NOT CMAKE_BUILD_TYPE)
 
 if(MSVC)
   add_compile_options(/W0)
