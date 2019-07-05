@@ -44,7 +44,7 @@ institute: IRTG Soft Tissue Robotics (GRK2198/1)
 
 ## Tutorial Project
 
-get the tutorial from github with
+Get the tutorial from Github with
 
 ```sh
 cd ~/dev
@@ -78,7 +78,7 @@ make -j4
 make doc
 ```
 
-The binaries are generated withing the `./build/...`.
+The binaries are generated within the `./build/...`.
 You can find the documentation at [`./build/documentation/html/index.html`](build/documentation/html/index.html)
 
 ## Ex. 2: Math operations with `Eigen3`
