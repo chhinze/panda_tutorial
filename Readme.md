@@ -38,54 +38,13 @@ institute: IRTG Soft Tissue Robotics (GRK2198/1)
 
 # Theory
 
-## How the path planning is done:
-
-The overall trajectory is described by a path $\bm p(t): \mathbb R \mapsto \mathbb R^3$. We decouple the spatial planning from the time coordinate, by splitting it into the path itself, which is parametrized by its arc length with a length coordinate $s$ as
-
-$$ \bm p(s) \in \mathbb R^3, \quad s \in [0,L].$$
-
-In a separate step a motion profile is used to generate a smooth mapping $s(t): \mathbb R \mapsto \mathbb R$, connecting the arc length with a time coordinate.
-
-Finally, by inserting the motion profile into the path, we get
-
-$$ \bm p(t) = \bm p(s(t)) \in \mathbb R^3 $$
-
-
-![Speed Profile $s(t)$ with normalized length and time.](img/SpeedProfile.svg){#fig:speedProfile}
-
-![Example Path $p(s)$ for a continuous $s$ coordinate and path velocities for a discretization based on the speed profile, resulting in $p(s(t))$.](img/SampleTrajectory.svg){#fig:sampleTrajectory}
-
-The principle is visualized in {@fig:sampleTrajectory}, where a desired 2D trajectory $p(s)$ is shown. The speed Profile $s(t)$, pictured on {@fig:speedProfile}, is used to map the path location $s$ to a specific time $t$ and obtain the desired trajectory at discrete time points (i.e. $p(s(t))$, where $t \in 0(h)t_E$ with discretization step width $h$ and motion end time $t_E$).
-
-### Motion Profile
-
-We use a polynomial reference trajectory $s(t)$ (see {@fig:speedProfile}), assuming no motion at begin and end of the trajectory (i.e. $\dot s(t=\{0, t_E\}) = 0$, $\ddot s(t=\{0, t_E\}) = 0$, ... ). We require the motion profile to be 3 times (velocity, acceleration, jerk) continuously differentiable on $t\in [0, t_E]$ (in fact, a bijective mapping). This leads to a polynomial of order $N = 2*3+1 = 7$. We get (normalized for $s \in [0,1], t\in [0,t_E]$):
-
-$$s(t) = L \sum_{k=4}^7 a_k \left(t/t_E\right)^k = \bm a^T \underbrace{\bm{\bar t}}_{\frac{1}{t_E^k}\begin{bmatrix}t^4\\t^5\\t^6\\t^7 \end{bmatrix}}, \quad\text{with } \bm a = \begin{bmatrix} 35 &  -84 & 70 & -20 \end{bmatrix}^T$$
-$$\dot s(t) =  L\sum_{k=4}^7 k a_k t^{k-1}/t_E^k, \quad \ddot s(t) = L\sum_{k=4}^7 k (k-1) a_k t^{k-2}/t_E^k, \quad \ldots$$
-
-To assure, that dynamical limits are kept in Cartesian space, i.e. $\| \bm {\dot p}(t)\| \leq \bm v_{\max}$ and $\| \bm{\ddot p}(t) \|\leq \bm a_{\max}$, the motion profile needs to be transformed. Note, that $\bm p(s)$ is parametrized by arc length, which yields $\|\bm p'(s)\| \equiv 1$. With the cuve derivatives $\bm p'(s), \bm p''(s)$, etc. known, we can express
-
-$$\underbrace{\|\bm p'(s(t))\|}_{=1} \|\dot s(t)\| \leq \bm v_{\max}, \quad t \in [0, t_E] $$
-$$\Leftrightarrow \|\dot s(t)\| \leq v_{\max}$$
-
-Solving $\ddot s = 0$ yields the velocity maximum at $t_{\max,v} = t_E/2$, where $\dot s(t_{\max,v}) = \frac{35 L}{16 t_E}$. We get the constraint, that 
-
-$$ t_E \geq \frac{35 L}{16 v_{\max}}.$$
-
-Similarly, for $\ddot s(t)$ we get maxima at $t_{\max,a} = (5 \pm t_E \sqrt 5)/10$, which both yield $\ddot s(t_{\max,a}) \approx_5\mp 0.72143 L/t_E^2$. Hence, the second constraint is
-
-$$ t_E \geq \sqrt{ 7.51319 L /a_{\max}}. $$
-
-By combining both constraints, we can give the end time $t_E$ as
-
-$$ t_E = \max\{35 L/(16 v_{\max}), \sqrt{7.51319 L /a_{\max}} \} .$$
+- [How the path planning is done](pathPlanning.ipynb)
 
 # Exercises:
 
 ## Tutorial Project
 
-get the tutorial from github with
+Get the tutorial from Github with
 
 ```sh
 cd ~/dev
@@ -94,8 +53,65 @@ git clone https://github.com/chhinze/panda_tutorial
 
 ## Ex. 1: Build the demo project and its documentation
 
+Install the requirements for building the documentation
+
+```sh
+# --no-install-recommends needed to prevent installing doxygen-latex
+sudo apt install --no-install-recommends doxygen graphviz
+```
+
+
+The project can be built with `cmake` with GNU `make`. I.e.
+
+```sh
+cd ~/dev/panda_tutorial
+mkdir build 
+cd build
+
+# build the makefiles
+cmake ..
+
+# build the executables from C++ code
+make -j4
+
+# build the documentation with doxygen (needs doxygen installed)
+make doc
+```
+
+The binaries are generated within the `./build/...`.
+You can find the documentation at [`./build/documentation/html/index.html`](build/documentation/html/index.html)
+
 ## Ex. 2: Math operations with `Eigen3`
+
+1. Create two `Eigen::Vector3d` objects
+    - One with all entries 10 and 
+    - one with [0.1, 0.5, 0.7];
+2. Create two `Eigen::Matrix3d` objects:
+    - An Identity matrix
+    - A Matrix with
+        ```
+        | 1, 2, 3 |
+        | 4, 5, 6 |
+        | 7, 8, 9 |
+        ```
+3. Try, how to do vector-vector matrix-vector and matrix-matrix multiplications
+4. Find out, how to perform element-wise operations. (E.g. find the row-wise maximum of a matrix, multiply element-wise).
+5. Access the first two elements of a vector. Write new values to it.
+
 
 ## Ex. 3: Drive the robot on axes level
 
+1. Have a look at the [MotionGenerator](https://frankaemika.github.io/libfranka/classMotionGenerator.html), which is originally provided by Franka Emika for their code samples. It is included as `"examples_common.h"`
+2. Define a goal position as `std::array<double,7>` for the axes. The joint positions should be [0, -pi/4, 0, -3/4*pi, 0, pi/2, pi/4] (`0, -M_PI_4, 0, -3 * M_PI_4, 0, M_PI_2, M_PI_4`). Create a MotionGenerator object with this goal position.
+3. Set the robot controller to axis position control by just passing the `MotionGenerator` object. Refer to the [libfranka documentation](https://frankaemika.github.io/libfranka/classfranka_1_1Robot.html) for different control modes.
+4. Build and run the application (`make -j4 axes_motion`). Be careful, the robot will be moved. Be prepared to push the user stop button.
+
 ## Ex. 4: Drive the robot in a linear trajectory
+
+1. Refer to the documentation to find out how to read a `franka::RobotState`. Read it once to get the sart position.
+2. `O_T_EE_c` contains the homogeneous transformation matrix as array with 16 values. Convert it to a 6d vector (3 translations, 3 RPY rotations) by using the function `homogeneousTfArray2PoseVec(std::array<doublem 16>) -> Eigen::Vector6d`
+3. Calculate a 6d goal pose by adding 0.1 m to each of the translational coordinates.
+4. Create a `LinearTrajectory` between start an end pose. Use `v_max = 0.05`, `a_max = 0.5` and `j_max = 1e-3`.
+5. Create a `TrajectoryIteratorCartesianVelocity` object. It overloads the function call operator, such that it can directly be used in `franka::Robot.control(...)`.
+6. Specifiy the robot controller (`panda.control(...);`)
+7. Build and run the application (`make -j4 cartesian_trajectory`). Be careful, the robot will be moved. Be prepared to push the user stop button.
