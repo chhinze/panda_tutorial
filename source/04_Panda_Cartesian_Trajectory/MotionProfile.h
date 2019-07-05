@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <eigen3/Eigen/Eigen>
 
-/** 3 times differentiable polynomial reference trajectory z(t) \in [0,1]
+/** \brief 3 times differentiable polynomial reference trajectory z(t) \in [0,1]
  *
  * z(t) = a_4*(t/T)^4 + a_5*(t/T)^5 +a_6*(t/T)^6 + a_7*(t/T)^7
  *
@@ -23,18 +23,18 @@ private:
   static constexpr double p_v_max = 2.1875;
   static constexpr double p_a_max = 7.513188404399293;
 
-  /** returns the end time of the motion profile depending on curve length L and allowed dynamics
-   * limits
+  /** \brief returns the end time of the motion profile depending on curve length L and allowed
+   * dynamics limits
    * */
   static double get_t_E(double v_max_allowed, double a_max_allowed, double L, double dt);
 
 public:
-  /** Evaluates the motion profile for the whole trajectory with normalized length coordinate s \in
-   * [0,1]
+  /** \brief Evaluates the motion profile for the whole trajectory with normalized length coordinate
+   * s \in [0,1]
    *
-   * \arg v_max_allowed maximum allowed velocity [m/s], the trajectory is adapted to this limit
-   * \arg a_max_allowed maximum allowed acceleration [m/s^2], the trajectory is adapted to this
-   * limit \arg L the real length of the calling curve p(s) [m] \arg dt time step width [s]
+   * \arg[in] v_max_allowed maximum allowed velocity [m/s], the trajectory is adapted to this limit
+   * \arg[in] a_max_allowed maximum allowed acceleration [m/s^2], the trajectory is adapted to this
+   * limit \arg[in] L the real length of the calling curve p(s) [m] \arg[in] dt time step width [s]
    *
    * \returns std::pair containing generated time vector (1st element) and the position values (2nd
    * element)
@@ -43,12 +43,12 @@ public:
   static std::pair<Eigen::VectorXd, Eigen::VectorXd> s_t(double v_max_allowed, double a_max_allowed,
                                                          double L, double dt);
 
-  /** Evaluates the derivative of the motion profile for the whole trajectory w.r.t the normalized
-   * length coordinate s \in [0,1]
+  /** \brief Evaluates the derivative of the motion profile for the whole trajectory w.r.t the
+   * normalized length coordinate s \in [0,1]
    *
-   * \arg v_max_allowed maximum allowed velocity [m/s], the trajectory is adapted to this limit
-   * \arg a_max_allowed maximum allowed acceleration [m/s^2], the trajectory is adapted to this
-   * limit \arg L the real length of the calling curve [m] \arg dt time step width [s]
+   * \arg[in] v_max_allowed maximum allowed velocity [m/s], the trajectory is adapted to this limit
+   * \arg[in] a_max_allowed maximum allowed acceleration [m/s^2], the trajectory is adapted to this
+   * limit \arg[in] L the real length of the calling curve [m] \arg[in] dt time step width [s]
    *
    * \returns std::pair containing generated time vector (1st element) and the  velocity values (2nd
    * element)
@@ -58,7 +58,7 @@ public:
   ds_dt(double v_max_allowed, double a_max_allowed, double L, double dt);
 };
 
-/** Motion profile s(t) with smooth derivatives up to order 3.
+/** \brief Motion profile s(t) with smooth derivatives up to order 3.
  *
  * All functionality is initialized on construction, afterwards, only get-Access to members is
  * possible.

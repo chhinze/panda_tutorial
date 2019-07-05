@@ -27,16 +27,16 @@ Eigen::Vector6d LinearPath::at(double s) {
 
 Eigen::Matrix6dynd LinearPath::at(const Eigen::VectorXd &s) {
   auto s_ = this->clamp(s, 0, 1);
-  return from * Eigen::VectorXd::Ones(s_.size()).transpose() + direction * s.transpose();
+  Eigen::Matrix6dynd p =
+      from * Eigen::VectorXd::Ones(s_.size()).transpose() + direction * s_.transpose();
+  return p;
 }
 
-Eigen::Vector6d LinearPath::ds_at(double s) {
-  s = std::max(std::min(s, 1.), 0.); // std::clamp(s, 0, 1); // limit s to be in [0,1]
-  return direction;
-}
+Eigen::Vector6d LinearPath::ds_at(double) { return direction; }
 
 Eigen::Matrix6dynd LinearPath::ds_at(const Eigen::VectorXd &s) {
-  return direction * Eigen::VectorXd::Ones(s.size()).transpose();
+  Eigen::Matrix6dynd dp = direction * Eigen::VectorXd::Ones(s.size()).transpose();
+  return dp;
 }
 
 std::size_t LinearPath::dim() { return this->from.size(); }
