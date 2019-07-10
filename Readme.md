@@ -20,7 +20,7 @@ institute: IRTG Soft Tissue Robotics (GRK2198/1)
     sudo apt update && sudo apt install --yes build-essential cmake git libpoco-dev libeigen3-dev
 
     # from here: build libfranka dependency from source code and install it:
-    git clone https://github.com/frankaemika/libfranka.git
+    git clone --recursive https://github.com/frankaemika/libfranka.git
     cd libfranka
 
     git checkout ${libfranka_version}
@@ -42,12 +42,14 @@ institute: IRTG Soft Tissue Robotics (GRK2198/1)
 
 # Exercises:
 
+> The exercises without solution are directly available on the `master` branch. The solution is under branch `solution`. 
+
 ## Tutorial Project
 
 Get the tutorial from Github with
 
 ```sh
-cd ~/dev
+# Drive C: on Windows (with WSL) is available with /mnt/c/..., so you might want to `cd` to this directory
 git clone https://github.com/chhinze/panda_tutorial
 ```
 
