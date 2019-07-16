@@ -9,7 +9,7 @@ institute: IRTG Soft Tissue Robotics (GRK2198/1)
 # Preliminaries:
 
 1. The tutorial will run on Linux, explanations below are for Ubuntu. If you haven't already installed Ubuntu on your Computer, or enabled the Windows Sybsystem on Linux (WSL), you should install it, following the tutorial on <https://docs.microsoft.com/en-us/windows/wsl/install-win10>. As distribution install e.g. Ubuntu 18.04. This will enable you to run a virtual Ubuntu terminal on Windows 10.
-2. Install Git on Windows (<https://docs.microsoft.com/en-us/windows/wsl/install-win10>), or directly in the WSL (`sudo apt install git`)
+2. Install Git on Windows (<https://git-scm.com/downloads>), or directly in the WSL (`sudo apt install git`)
 3. Install requirements for building the C++ project that we will create throughout this tutorial.  We need `libfranka` (unfortunately not directly available through sources) and `libeigen3-dev`
 
     ```sh
